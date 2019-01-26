@@ -66,10 +66,9 @@ public class Vozilo extends Thread implements Serializable {
     private boolean isparkiraj = false;
     private boolean potjeraZaDrugiDioPlatforme = false;
 
-    private boolean vecObradioPotjeru = false; // jer ako i lijevi i desno od tebe ima auto sa potjere
+    private boolean vecObradioPotjeru = false;
 
     public static boolean sudar = false;
-    // private static boolean obradaSudara = false;
     private boolean obradaSudara = false;
     private static boolean sudarSeVecDesioNaPlatformi = false;
     Vozilo udarenoVozilo1 = null, udarenoVozilo2 = null;
@@ -78,7 +77,7 @@ public class Vozilo extends Thread implements Serializable {
     private static int vrstaDrugogUdarenogVozila, kolonaDrugogUdarenogVozila;
 
     private int vrstaVozilaNaPlatformi, kolonaVozilaNaPlatformi;
-    private boolean ucestvujemUSudaru = false; // da bi obezbjedio da se vise ne krece
+    private boolean ucestvujemUSudaru = false;
 
     private static int vrstaSudara, kolonaSudara;
     private boolean vecSamIzvrsioUvidjaj = false;
@@ -87,8 +86,7 @@ public class Vozilo extends Thread implements Serializable {
     private int kolonaZaKretanjeLijevoKodSudara = 4;
     private int kolonaZaKretanjeDesnoKodSudara = 2;
 
-    //private static boolean policijaZavrsilaUvidjaj = false, hitnaZavrsilaUvidjaj = false, VatrogasciZavrsiliUvidjaj = false;
-    private static int brojacUvidjaja; // za svaki uvidjaj ga uvecaj za jedan i kad ima vrijednost tri onda kao sudar = false;
+    private static int brojacUvidjaja;
     Thread policija = null, hitna = null, vatrogasno = null;
     private int brojPlatformeNaKojojSeDesioSudar;
 
@@ -232,7 +230,7 @@ public class Vozilo extends Thread implements Serializable {
 
     private boolean isparkirajZaDrugiDioPlatforme = false;
 
-    private void isparkirajSe(int vrsta, int kolona) { // isparkiravanje kod potjere :D
+    private void isparkirajSe(int vrsta, int kolona) {
 
         if (kolona == 0) {
             voziloKojePratiPolicijsko.idiDesno(vrsta, 1);
@@ -254,34 +252,23 @@ public class Vozilo extends Thread implements Serializable {
     public void parkirajSe() {
         while (!parkiran) {
 
-            int lokalnaVrstaPremaDole = 2; //++ do 9
-            int lokalnaZaDesno = 2; //++ do 6
-            int lokalnaVrstaZaGore = 9; // -- do 1 
+            int lokalnaVrstaPremaDole = 2;
+            int lokalnaZaDesno = 2;
+            int lokalnaVrstaZaGore = 9;
             int vrstaZaPotjeru = 0;
             int kolonaZaPotjeru = 0;
 
-            // kad dodam vise platformi pa za sudar kao ako platforma nije puna i ako vozilo(this) ucestvuje u sudaru neka napusti Garazu
             if ((Garaza.garaza[brojPlatforme].DaLiJePlatformaPopunjena() == true) && !(Garaza.garaza[brojPlatforme].isDaLiJeZadnjaPlatforma())) {
                 int lokalnaKolona = 1;
                 if (brojPlatforme == 0) {
                     lokalnaKolona = 0;
                 }
-                // int lokalnaKolona = 1;
                 while (lokalnaKolona < 8) {
                     idiDesno(1, lokalnaKolona++);
                 }
-                // if (this.ucestvujemUSudaru) {
-                //    this.idiGore(0, 7);
-                //    this.idiLijevo(0, 6);
-                //    if (this != null) {
-                //        napustiGarazu();
-                //   }
-                // } else {
                 idiNaSljedecuPlatformu();
-                //}
             }
-
-            if (!this.presaoNaSljedecuPlatformu) { // VRATI OVO
+            if (!this.presaoNaSljedecuPlatformu) {
                 if (brojPlatforme == 0) {
                     idiDesno(1, 0);
                 }
@@ -470,9 +457,6 @@ public class Vozilo extends Thread implements Serializable {
                 }
                 lokalnaVrstaZaGore--;
             }
-            //Razmisli o ispod zakomentarisanoj linij jer bubam auta idu platforma puna , jbg u tom redu je i policijsko naleti na auto
-            //sa potjere i platforma onda nije vise puna :/ , pa sam uklinio da li je platforma puna, uglavnom fino radi
-            //if (!potjera && !parkiran && !Garaza.garaza[brojPlatforme].isDaLiJeZadnjaPlatforma() && Garaza.garaza[brojPlatforme].DaLiJePlatformaPopunjena()) {
             if (!potjera && !parkiran && !Garaza.garaza[brojPlatforme].isDaLiJeZadnjaPlatforma() && !this.ucestvujemUSudaru) {
                 idiDesno(1, 7);
                 idiNaSljedecuPlatformu();
@@ -530,7 +514,6 @@ public class Vozilo extends Thread implements Serializable {
                 parkiran = true;
                 break;
             }
-            // nezgodno ovo za zadnjom realizovati radi potjere :D
             if ((Garaza.garaza[brojPlatforme].isDaLiJeZadnjaPlatforma()) && !(parkiran)) {
                 if (!Garaza.garaza[brojPlatforme].getPlatforma()[1][6].isDaLiJePoljeSlobodno()) {
                     idiGore(0, 6);
@@ -551,7 +534,6 @@ public class Vozilo extends Thread implements Serializable {
 
         }
         this.zapocniParkiranje = false;
-
     }
 
     private void napustiGarazu() {
@@ -572,13 +554,11 @@ public class Vozilo extends Thread implements Serializable {
                 }
                 if (lokalnaKolonaZaIzlazakIzGaraze == (-1) && (this != null)) {
                     if (Garaza.garaza[brojPlatforme].getPlatforma()[0][0].getVozilo().equals(this)) {
-
                         Garaza.garaza[brojPlatforme].getPlatforma()[0][0].setVozilo(null);
                         ispisi();
                         free.signalAll();
                     }
                 }
-
                 lokalnaKolonaZaIzlazakIzGaraze = 6;
                 brojPlatforme--;
             }
@@ -620,31 +600,22 @@ public class Vozilo extends Thread implements Serializable {
     private void idiDole(int vrsta, int kolona) {
         locker.lock();
         try {
-
             postaviPrioritete();
-
             if (!this.ucestvujemUUvidjaju) {
                 while (sudar && Garaza.garaza[brojPlatforme].isSudarNaPlatformi()) {
                     sleep(Garaza.garaza[brojPlatforme].getUspavajVozila());
-                    //notfree.await(SACEKAJ, TimeUnit.MILLISECONDS);
                 }
 
                 if (!sudar && (!sudarSeVecDesioNaPlatformi) && (vrsta != 9 && vrsta > 1) && !potjera && (!Garaza.garaza[brojPlatforme].getPlatforma()[vrsta + 1][kolona].isDaLiJePoljeSlobodno())
                         && (!Garaza.garaza[brojPlatforme].getPlatforma()[vrsta + 1][kolona].isDaLiJePoljeSlobodno() && !(Garaza.garaza[brojPlatforme].getPlatforma()[vrsta + 1][kolona].getVozilo() instanceof SpecijalnoVoziloInterface) && !(this instanceof SpecijalnoVoziloInterface))) {
                     if (daLiJeMogucSudar = rand.nextInt(100) < 10) {
-                        // System.out.println("SUDAR");
-                        //  System.out.println("A:" + vrsta + "_" + kolona);
                         vrstaSudara = vrsta;
                         kolonaSudara = kolona;
-
                         Garaza.garaza[brojPlatforme].setSudarNaPlatformi(true);
                         udarenoVozilo1 = Garaza.garaza[brojPlatforme].getPlatforma()[vrsta - 1][kolona].getVozilo();
                         udarenoVozilo2 = Garaza.garaza[brojPlatforme].getPlatforma()[vrsta + 1][kolona].getVozilo();
-                        //System.out.println("UDARENO1: " + udarenoVozilo1);
-                        // System.out.println("UDARENO2: " + udarenoVozilo2);
                         vrstaPrvogUdarenogVozila = (vrsta - 1);
                         kolonaPrvogUdarenogVozila = kolona;
-
                         vrstaDrugogUdarenogVozila = vrsta + 1;
                         kolonaDrugogUdarenogVozila = kolona;
 
@@ -676,16 +647,12 @@ public class Vozilo extends Thread implements Serializable {
                 free.signalAll();
 
             }
-
-            //synchronized (Garaza.garaza[brojPlatforme].getPlatforma()[vrsta - 1][kolona]) {
             synchronized (Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona]) {
                 Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona].setVozilo(this);
                 Garaza.garaza[brojPlatforme].getPlatforma()[vrsta - 1][kolona].setVozilo(null);
                 ispisi();
             }
             free.signalAll();
-            //}
-
         } catch (InterruptedException ex) {
             Logger.getLogger(Vozilo.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -702,28 +669,21 @@ public class Vozilo extends Thread implements Serializable {
                 vrsta = 0;
                 kolona = 0;
             }
-
             if (!ucestvujemUUvidjaju) {
-
                 while (sudar && Garaza.garaza[brojPlatforme].isSudarNaPlatformi()) {
                     sleep(Garaza.garaza[brojPlatforme].getUspavajVozila());
                 }
                 if (!sudar && (!sudarSeVecDesioNaPlatformi) && (vrsta > 2) && !potjera && (!Garaza.garaza[brojPlatforme].getPlatforma()[vrsta - 1][kolona].isDaLiJePoljeSlobodno())
                         && (!Garaza.garaza[brojPlatforme].getPlatforma()[vrsta - 1][kolona].isDaLiJePoljeSlobodno() && !(Garaza.garaza[brojPlatforme].getPlatforma()[vrsta - 1][kolona].getVozilo() instanceof SpecijalnoVoziloInterface) && !(this instanceof SpecijalnoVoziloInterface))) {
                     if (daLiJeMogucSudar = rand.nextInt(100) < 30) {
-                        System.out.println("SUDAR");
-                        System.out.println("A:" + vrsta + "_" + kolona);
                         vrstaSudara = vrsta;
                         kolonaSudara = kolona;
 
                         Garaza.garaza[brojPlatforme].setSudarNaPlatformi(true);
                         udarenoVozilo1 = Garaza.garaza[brojPlatforme].getPlatforma()[vrsta + 1][kolona].getVozilo();
                         udarenoVozilo2 = Garaza.garaza[brojPlatforme].getPlatforma()[vrsta - 1][kolona].getVozilo();
-                        //System.out.println("UDARENO1: " + udarenoVozilo1);
-                        // System.out.println("UDARENO2: " + udarenoVozilo2);
                         vrstaPrvogUdarenogVozila = (vrsta + 1);
                         kolonaPrvogUdarenogVozila = kolona;
-
                         vrstaDrugogUdarenogVozila = (vrsta - 1);
                         kolonaDrugogUdarenogVozila = kolona;
 
@@ -733,9 +693,7 @@ public class Vozilo extends Thread implements Serializable {
                         sudarSeVecDesioNaPlatformi = true;
                         Garaza.garaza[brojPlatforme].setSudarNaPlatformi(true);
                         while (sudar && Garaza.garaza[brojPlatforme].isSudarNaPlatformi()) {
-                            // System.out.println("UPSSS");
                             pronadjiPolicijskaVozila();
-                            // System.out.println("KKKK KK K");
                             sleep(Garaza.garaza[brojPlatforme].getUspavajVozila());
                             Garaza.garaza[brojPlatforme].setSudarNaPlatformi(false);
                             break;
@@ -751,7 +709,6 @@ public class Vozilo extends Thread implements Serializable {
 
             if (vrsta != 0 && Garaza.garaza[brojPlatforme].getPlatforma()[vrsta - 1][kolona].getVozilo() instanceof RotacijaInterface
                     && !pratimPolicijskoVozilo) {
-                //sleep(1000);
                 sleep(400);
                 while (!Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona].isDaLiJePoljeSlobodno()) {
                     notfree.await(SACEKAJ, TimeUnit.MILLISECONDS);
@@ -760,21 +717,13 @@ public class Vozilo extends Thread implements Serializable {
             }
 
             if (vrsta == 9) {
-                // synchronized (Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona]) {
                 Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona].setVozilo(this);
                 ispisi();
                 Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona].setVozilo(null);
-                //  }
-                // free.signalAll();
             } else {
-                // synchronized (Garaza.garaza[brojPlatforme].getPlatforma()[vrsta + 1][kolona]) {
-                // synchronized (Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona]) {
                 Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona].setVozilo(this);
                 Garaza.garaza[brojPlatforme].getPlatforma()[vrsta + 1][kolona].setVozilo(null);
                 ispisi();
-                // }
-                //}
-                //  free.signalAll();
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(Vozilo.class
@@ -787,41 +736,23 @@ public class Vozilo extends Thread implements Serializable {
     private void idiLijevo(int vrsta, int kolona) {
         locker.lock();
         try {
-            // locker.lock();
             postaviPrioritete();
             if (!ucestvujemUUvidjaju) {
-                //  if (sudar) {
-                //System.out.println("vec je sudar!");
                 while (sudar && Garaza.garaza[brojPlatforme].isSudarNaPlatformi()) {
                     sleep(Garaza.garaza[brojPlatforme].getUspavajVozila());
                 }
-                // 
-
                 if (!sudar && (!sudarSeVecDesioNaPlatformi) && (kolona > 2 && kolona < 7) && !potjera && (!Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona - 1].isDaLiJePoljeSlobodno())
                         && (!Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona - 1].isDaLiJePoljeSlobodno() && (kolona != 5) && !(Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona - 1].getVozilo() instanceof SpecijalnoVoziloInterface) && !(this instanceof SpecijalnoVoziloInterface)) && (vrsta == 0)) {
-                    // System.out.println("probo");
-                    if (daLiJeMogucSudar = rand.nextInt(100) < 25) {
-
-                        //System.out.println("SUDAR: " + vrsta + "_" + kolona);
-                        // vrstaSudara = vrsta;
-                        // kolonaSudara = kolona;
-                        // obrnuto udareno vozilo jedan i udareno da da bih se prilagodio funkciji idi desno da nemam dupliranje koda
-                        //udarenoVozilo1 = Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona - 1].getVozilo();
-                        //udarenoVozilo2 = Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona + 1].getVozilo();
+                    if (daLiJeMogucSudar = rand.nextInt(100) < 10) {
                         udarenoVozilo1 = Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona + 1].getVozilo();
                         udarenoVozilo2 = Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona - 1].getVozilo();
-
                         vrstaPrvogUdarenogVozila = vrsta;
-                        //kolonaPrvogUdarenogVozila = (kolona - 1);
                         kolonaPrvogUdarenogVozila = (kolona + 1);
-
                         vrstaDrugogUdarenogVozila = vrsta;
-                        //kolonaDrugogUdarenogVozila = (kolona + 1);
                         kolonaDrugogUdarenogVozila = (kolona - 1);
 
                         sudar = true;
-                        //Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona - 1].getVozilo().ucestvujemUSudaru = true;
-                        //Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona + 1].getVozilo().ucestvujemUSudaru = true;
+
                         if (Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona + 1] != null) {
                             Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona + 1].getVozilo().ucestvujemUSudaru = true;
                         }
@@ -854,14 +785,11 @@ public class Vozilo extends Thread implements Serializable {
                 }
                 free.signalAll();
             }
-
-            //synchronized (Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona + 1]) {
             synchronized (Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona]) {
                 Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona].setVozilo(this);
                 Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona + 1].setVozilo(null);
                 ispisi();
             }
-            // }
             free.signalAll();
 
             if (brojPlatforme == 0 && vrsta == 0 && kolona == 0) {
@@ -885,9 +813,7 @@ public class Vozilo extends Thread implements Serializable {
 
         locker.lock();
         try {
-
             postaviPrioritete();
-
             if (!ucestvujemUUvidjaju) {
                 while (sudar && Garaza.garaza[brojPlatforme].isSudarNaPlatformi()) {
                     sleep(Garaza.garaza[brojPlatforme].getUspavajVozila());
@@ -896,8 +822,6 @@ public class Vozilo extends Thread implements Serializable {
                 if (!sudar && (!sudarSeVecDesioNaPlatformi) && (kolona > 2 && kolona < 6) && !potjera && (!Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona + 1].isDaLiJePoljeSlobodno())
                         && (!Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona + 1].isDaLiJePoljeSlobodno() && !(Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona + 1].getVozilo() instanceof SpecijalnoVoziloInterface) && !(this instanceof SpecijalnoVoziloInterface)) && (vrsta < 2 || vrsta > 8)) {
                     if (daLiJeMogucSudar = rand.nextInt(100) < 10) {
-                        //System.out.println("SUDAR");
-                        //System.out.println("A:" + vrsta + "_" + kolona);
                         vrstaSudara = vrsta;
                         kolonaSudara = kolona;
 
@@ -939,19 +863,10 @@ public class Vozilo extends Thread implements Serializable {
                 free.signalAll();
             }
 
-            if (kolona == 0) { // za ulazak u garazu //caprko si ovuda za sada se cini dobro
-                // synchronized (Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona]) {
+            if (kolona == 0) {
                 Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona].setVozilo(this);
                 ispisi();
-                // sleep(100); //vrati ovo :D kad zavrsis sudar
-                //kolona = 1;
-                // Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona - 1].setVozilo(null);
-                // ispisi();
-                //}
-                //free.signalAll();
             } else {
-
-                // synchronized (Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona - 1]) {
                 synchronized (Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona]) {
                     Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona].setVozilo(this);
                     Garaza.garaza[brojPlatforme].getPlatforma()[vrsta][kolona - 1].setVozilo(null);
@@ -959,8 +874,6 @@ public class Vozilo extends Thread implements Serializable {
                 }
             }
             free.signalAll();
-            //}
-            //}
         } catch (Exception ex) {
             Logger.getLogger(Vozilo.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -1000,84 +913,39 @@ public class Vozilo extends Thread implements Serializable {
 
             if (v instanceof PolicijskoVoziloInterface) {
                 policijskoVoziloSaPlatforme = v;
-                //policijskoVoziloSaPlatforme.setVrstaVozilaNaPlatformi(v.getVrstaVozilaNaPlatformi());
-                //policijskoVoziloSaPlatforme.setKolonaVozilaNaPlatformi(v.getKolonaVozilaNaPlatformi());
-                // policijskoVoziloSaPlatforme.ucestvujemUUvidjaju = true;
             } else if (v instanceof SanitetskoVoziloInterface) {
                 sanitetskoVoziloSaPlatforme = v;
-                //sanitetskoVoziloSaPlatforme.ucestvujemUUvidjaju = true;
             } else if (v instanceof VatrogasnoVoziloInterface) {
                 vatrogasnoVoziloSaPlatforme = v;
-                //vatrogasnoVoziloSaPlatforme.ucestvujemUUvidjaju = true;
             }
         }
-        // H A R D C O D E
-  /*      if (!Garaza.garaza[brojPlatforme].getPlatforma()[4][7].isDaLiJePoljeSlobodno()) {
-         policijskoVoziloSaPlatforme = Garaza.garaza[brojPlatforme].getPlatforma()[4][7].getVozilo();
-         policijskoVoziloSaPlatforme.setVrstaVozilaNaPlatformi(4);
-         policijskoVoziloSaPlatforme.setKolonaVozilaNaPlatformi(7);
-         policijskoVoziloSaPlatforme.ucestvujemUUvidjaju = true;
-
-         //System.out.println("POLICIJSKO VOZILO: " + policijskoVoziloSaPlatforme);
-         }
-
-         if (!Garaza.garaza[brojPlatforme].getPlatforma()[8][7].isDaLiJePoljeSlobodno()) {
-         sanitetskoVoziloSaPlatforme = Garaza.garaza[brojPlatforme].getPlatforma()[8][7].getVozilo();
-         sanitetskoVoziloSaPlatforme.setVrstaVozilaNaPlatformi(8);
-         sanitetskoVoziloSaPlatforme.setKolonaVozilaNaPlatformi(7);
-         sanitetskoVoziloSaPlatforme.ucestvujemUUvidjaju = true;
-
-         // System.out.println("SANITETSKO VOZILO: " + policijskoVoziloSaPlatforme);
-         }
-         /*     if (!Garaza.garaza[brojPlatforme].getPlatforma()[3][3].isDaLiJePoljeSlobodno()) {
-         vatrogasnoVoziloSaPlatforme = Garaza.garaza[brojPlatforme].getPlatforma()[3][3].getVozilo();
-         vatrogasnoVoziloSaPlatforme.setVrstaVozilaNaPlatformi(3);
-         vatrogasnoVoziloSaPlatforme.setKolonaVozilaNaPlatformi(3);
-         vatrogasnoVoziloSaPlatforme.ucestvujemUUvidjaju = true;
-
-         //System.out.println("VATROGASNO VOZILO: " + policijskoVoziloSaPlatforme);
-         }
-         */
-        ////////////////////////////
         if (policijskoVoziloSaPlatforme != null) {
             policijskoVoziloSaPlatforme.ucestvujemUUvidjaju = true;
             policija = new Thread(policijskoVoziloSaPlatforme);
             policijskoVoziloSaPlatforme.obradaSudara = true;
-            // System.out.println("KOORDINATE POLICISJKOG VOZILA:" + policijskoVoziloSaPlatforme.getVrstaVozilaNaPlatformi() + " " + policijskoVoziloSaPlatforme.getKolonaVozilaNaPlatformi());
-            // System.out.println("POLICIJSKO VOZILO: " + this);
             policija.start();
         }
         if (sanitetskoVoziloSaPlatforme != null) {
             sanitetskoVoziloSaPlatforme.ucestvujemUUvidjaju = true;
             hitna = new Thread(sanitetskoVoziloSaPlatforme);
             sanitetskoVoziloSaPlatforme.obradaSudara = true;
-            //System.out.println("KOORDINATE SANITETSKOg VOZILA:" + sanitetskoVoziloSaPlatforme.getVrstaVozilaNaPlatformi() + " " + sanitetskoVoziloSaPlatforme.getKolonaVozilaNaPlatformi());
-            // System.out.println("SANITETSKO VOZILO: " + this);
             hitna.start();
         }
         if (vatrogasnoVoziloSaPlatforme != null) {
             vatrogasnoVoziloSaPlatforme.ucestvujemUUvidjaju = true;
             vatrogasno = new Thread(vatrogasnoVoziloSaPlatforme);
             vatrogasnoVoziloSaPlatforme.obradaSudara = true;
-            //  System.out.println("KOORDINATE VATROGASNOG VOZILA:" + vatrogasnoVoziloSaPlatforme.getVrstaVozilaNaPlatformi() + " " + vatrogasnoVoziloSaPlatforme.getKolonaVozilaNaPlatformi());
-            // System.out.println("VATROGASNO VOZILO: " + this);
             vatrogasno.start();
         }
-
-        //sudar = false;
     }
 
     private void obradiSudarNaPlatformi() {
-
-        //System.out.println("OBRADA UDARENO1: " + Garaza.garaza[brojPlatforme].getPlatforma()[vrstaPrvogUdarenogVozila][kolonaPrvogUdarenogVozila].getVozilo());
-        //System.out.println("OBRADA UDARENO2: " + Garaza.garaza[brojPlatforme].getPlatforma()[vrstaDrugogUdarenogVozila][kolonaDrugogUdarenogVozila].getVozilo());
         int pocetnaVrstaSpecijalnogVozila = this.vrstaVozilaNaPlatformi;
         int pocetnaKolonaSpecijalnogVozila = this.kolonaVozilaNaPlatformi;
 
-        //if ((vrstaDrugogUdarenogVozila > 0 && vrstaDrugogUdarenogVozila < 10) && (kolonaDrugogUdarenogVozila > 0 && kolonaDrugogUdarenogVozila < 3)) {
-        // OVO JE ZA IDI DOLE NE BRISI !!!
+        //OVO JE ZA IDI DOLE NE BRISI !!!
         if ((vrstaDrugogUdarenogVozila > 1 && vrstaDrugogUdarenogVozila < 10) && (kolonaDrugogUdarenogVozila == 1)) {
-            if (this.kolonaVozilaNaPlatformi == 0) { //ako je specijalno vozilo u prvoj koloni
+            if (this.kolonaVozilaNaPlatformi == 0) {
 
                 if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][this.kolonaVozilaNaPlatformi + 1].isDaLiJePoljeSlobodno()
                         && !((vrstaVozilaNaPlatformi == vrstaSudara && kolonaSudara == 1) || (this.vrstaVozilaNaPlatformi == vrstaPrvogUdarenogVozila && kolonaSudara == 1)
@@ -1087,16 +955,6 @@ public class Vozilo extends Thread implements Serializable {
                 }
                 if ((this.vrstaVozilaNaPlatformi == vrstaSudara && kolonaSudara == 1) || (this.vrstaVozilaNaPlatformi == vrstaPrvogUdarenogVozila && kolonaSudara == 1)
                         || (this.vrstaVozilaNaPlatformi == vrstaDrugogUdarenogVozila && kolonaSudara == 1)) {
-                    System.out.println("VRSIM UVIDJAJ ALI NEMGU IZACI JER SE PORED MENE DESIO SUDAR");
-                    if (this instanceof SanitetskoVoziloInterface) {
-                        System.out.println("SANITETSKO");
-                    }
-                    if (this instanceof PolicijskoVoziloInterface) {
-                        System.out.println("POLICIJSKO");
-                    }
-                    if (this instanceof VatrogasnoVoziloInterface) {
-                        System.out.println("VATROGASNO");
-                    }
                     ((RotacijaInterface) this).setRotacija(true);
                     evidentirajSudar();
                     ((RotacijaInterface) this).setRotacija(false);
@@ -1119,7 +977,6 @@ public class Vozilo extends Thread implements Serializable {
                                 }
                             }
                         }
-                        // System.out.println("uvidjaJJJ");
                         evidentirajSudar();
                         ((RotacijaInterface) this).setRotacija(false);
                         Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
@@ -1133,11 +990,10 @@ public class Vozilo extends Thread implements Serializable {
                                     ((RotacijaInterface) this).setRotacija(true);
                                     this.idiDole(this.vrstaVozilaNaPlatformi, 2);
                                 } else {
-                                    break; // isto neko zaobilazenje ili slicno
+                                    break;
                                 }
                             }
                         }
-                        // System.out.println("uvidjaJJJ");
                         evidentirajSudar();
                         ((RotacijaInterface) this).setRotacija(false);
                         Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
@@ -1153,7 +1009,7 @@ public class Vozilo extends Thread implements Serializable {
                                     ((RotacijaInterface) this).setRotacija(true);
                                     this.idiGore(this.vrstaVozilaNaPlatformi, 1);
                                 } else {
-                                    break; // isto neko zaobilazenje
+                                    break;
                                 }
                             }
 
@@ -1164,7 +1020,7 @@ public class Vozilo extends Thread implements Serializable {
                         Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
                         Garaza.garaza[brojPlatforme].getPlatforma()[vrstaVozilaNaPlatformi + 1][1].setVozilo(null);
 
-                    } else if (this.vrstaVozilaNaPlatformi < vrstaPrvogUdarenogVozila) { // iza sam udarenog vozila ali sada sam u prvoj koloni
+                    } else if (this.vrstaVozilaNaPlatformi < vrstaPrvogUdarenogVozila) {
                         while (this.vrstaVozilaNaPlatformi < vrstaPrvogUdarenogVozila) {
                             this.vrstaVozilaNaPlatformi++;
                             if (this.vrstaVozilaNaPlatformi < vrstaPrvogUdarenogVozila) {
@@ -1172,7 +1028,7 @@ public class Vozilo extends Thread implements Serializable {
                                     ((RotacijaInterface) this).setRotacija(true);
                                     this.idiDole(this.vrstaVozilaNaPlatformi, 1);
                                 } else {
-                                    break; // isto neko zaobilazenje
+                                    break;
                                 }
                             }
 
@@ -1195,16 +1051,6 @@ public class Vozilo extends Thread implements Serializable {
 
                 if ((this.vrstaVozilaNaPlatformi == vrstaSudara && kolonaSudara == 1) || (this.vrstaVozilaNaPlatformi == vrstaPrvogUdarenogVozila && kolonaSudara == 1)
                         || (this.vrstaVozilaNaPlatformi == vrstaDrugogUdarenogVozila && kolonaSudara == 1)) {
-                    System.out.println("VRSIM UVIDJAJ ALI NEMGU IZACI JER SE PORED MENE DESIO SUDAR");
-                    if (this instanceof SanitetskoVoziloInterface) {
-                        System.out.println("SANITETSKO");
-                    }
-                    if (this instanceof PolicijskoVoziloInterface) {
-                        System.out.println("POLICIJSKO");
-                    }
-                    if (this instanceof VatrogasnoVoziloInterface) {
-                        System.out.println("VATROGASNO");
-                    }
                     ((RotacijaInterface) this).setRotacija(true);
                     evidentirajSudar();
                     ((RotacijaInterface) this).setRotacija(false);
@@ -1224,7 +1070,6 @@ public class Vozilo extends Thread implements Serializable {
                             }
                         }
                     }
-
                     evidentirajSudar();
                     ((RotacijaInterface) this).setRotacija(false);
                     Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi + 1][2].setVozilo(null);
@@ -1259,7 +1104,6 @@ public class Vozilo extends Thread implements Serializable {
                     evidentirajSudar();
                     ((RotacijaInterface) this).setRotacija(false);
                 }
-
                 if (!this.vecSamIzvrsioUvidjaj && this.vrstaVozilaNaPlatformi < 9) {
                     while (this.vrstaVozilaNaPlatformi < 9) {
                         this.vrstaVozilaNaPlatformi++;
@@ -1316,11 +1160,10 @@ public class Vozilo extends Thread implements Serializable {
                 if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][this.kolonaVozilaNaPlatformi - 1].isDaLiJePoljeSlobodno()) {
                     ((RotacijaInterface) this).setRotacija(true);
                     this.idiLijevo(this.vrstaVozilaNaPlatformi, 6);
-                    //}
                     if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][this.kolonaVozilaNaPlatformi - 2].isDaLiJePoljeSlobodno()) {
                         ((RotacijaInterface) this).setRotacija(true);
                         this.idiLijevo(this.vrstaVozilaNaPlatformi, 5);
-                    } else { // obezbjedi da se krece kolonom 6
+                    } else {
                         evidentirajSudar();
                         ((RotacijaInterface) this).setRotacija(false);
                         Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
@@ -1382,7 +1225,7 @@ public class Vozilo extends Thread implements Serializable {
                 }
             }
 
-            if (this.vrstaVozilaNaPlatformi == 9 && this.kolonaVozilaNaPlatformi == 7) { // ako je kolona 7 i vrsta 9
+            if (this.vrstaVozilaNaPlatformi == 9 && this.kolonaVozilaNaPlatformi == 7) {
 
                 ((RotacijaInterface) this).setRotacija(true);
                 if (Garaza.garaza[brojPlatforme].getPlatforma()[9][6].isDaLiJePoljeSlobodno()
@@ -1391,8 +1234,6 @@ public class Vozilo extends Thread implements Serializable {
                     this.idiLijevo(9, 6);
                     this.idiGore(8, 6);
                     this.idiLijevo(8, 5);
-                    // } 
-
                     while (this.kolonaZaKretanjeLijevoKodSudara > 1) {
                         if (Garaza.garaza[brojPlatforme].getPlatforma()[8][kolonaZaKretanjeLijevoKodSudara].isDaLiJePoljeSlobodno()) {
                             this.idiLijevo(8, kolonaZaKretanjeLijevoKodSudara);
@@ -1401,7 +1242,6 @@ public class Vozilo extends Thread implements Serializable {
                             break;
                         }
                     }
-
                     if (this.vrstaVozilaNaPlatformi == 9) {
                         this.vrstaVozilaNaPlatformi = 8;
                     }
@@ -1428,7 +1268,7 @@ public class Vozilo extends Thread implements Serializable {
                         Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi + 1][2].setVozilo(null);
                         Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
                     }
-                } else { // ako nisi uspio izac jbg// malo jos ovo doraditi oko izlaska :S
+                } else {
                     ((RotacijaInterface) this).setRotacija(true);
                     evidentirajSudar();
                     ((RotacijaInterface) this).setRotacija(false);
@@ -1437,17 +1277,13 @@ public class Vozilo extends Thread implements Serializable {
             }
 
         }
-
-        // ZA IDI DESNO
         if (vrstaDrugogUdarenogVozila == 9 && (kolonaDrugogUdarenogVozila > 2 && kolonaDrugogUdarenogVozila < 7)) {
 
-            if (this.kolonaVozilaNaPlatformi == 0 && this.vrstaVozilaNaPlatformi != 9) { //ako je specijalno vozilo u prvoj koloni
+            if (this.kolonaVozilaNaPlatformi == 0 && this.vrstaVozilaNaPlatformi != 9) {
 
                 if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][this.kolonaVozilaNaPlatformi + 1].isDaLiJePoljeSlobodno()) {
                     ((RotacijaInterface) this).setRotacija(true);
                     this.idiDesno(this.vrstaVozilaNaPlatformi, 1);
-
-                    // jos malo poraditi da se krece kolonom 1 ako je kolona 2 zauzeta 
                     if (!this.vecSamIzvrsioUvidjaj && Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][this.kolonaVozilaNaPlatformi + 2].isDaLiJePoljeSlobodno()) { // za kolonu broj 2
                         ((RotacijaInterface) this).setRotacija(true);
                         this.idiDesno(this.vrstaVozilaNaPlatformi, 2);
@@ -1472,11 +1308,6 @@ public class Vozilo extends Thread implements Serializable {
                         if (this.vrstaVozilaNaPlatformi == 9) {
                             this.vrstaVozilaNaPlatformi = 8;
                         }
-
-                        // if (kolonaPrvogUdarenogVozila > 2 && kolonaPrvogUdarenogVozila < 5) {
-                        // if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][2].isDaLiJePoljeSlobodno()) {
-                        //    this.idiDole(vrstaSudara, kolonaSudara);
-                        // }
                         while (!this.vecSamIzvrsioUvidjaj && (this.kolonaZaKretanjeDesnoKodSudara < kolonaPrvogUdarenogVozila)) {
                             this.kolonaZaKretanjeDesnoKodSudara++;
                             if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][kolonaZaKretanjeDesnoKodSudara].isDaLiJePoljeSlobodno()
@@ -1497,17 +1328,13 @@ public class Vozilo extends Thread implements Serializable {
                             ((RotacijaInterface) this).setRotacija(false);
                             Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][kolonaZaKretanjeDesnoKodSudara - 1].setVozilo(null);
                             Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
-                        } //else if (kolonaPrvogUdarenogVozila > 0 && kolonaPrvogUdarenogVozila < 3) {
-                        else {
+                        } else {
                             evidentirajSudar();
                             ((RotacijaInterface) this).setRotacija(false);
                             Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi - 1][2].setVozilo(null);
                             Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
                         }
                     }
-                    // if (this.vrstaVozilaNaPlatformi == 9) {
-                    //     this.vrstaVozilaNaPlatformi = 8;
-                    //  }
                 } else {
                     ((RotacijaInterface) this).setRotacija(true);
                     evidentirajSudar();
@@ -1517,7 +1344,6 @@ public class Vozilo extends Thread implements Serializable {
 
             if (this.kolonaVozilaNaPlatformi == 0 && this.vrstaVozilaNaPlatformi == 9) {
                 if (!Garaza.garaza[brojPlatforme].getPlatforma()[9][1].isDaLiJePoljeSlobodno() || (this.vrstaVozilaNaPlatformi == vrstaSudara && kolonaSudara == 2) || (this.vrstaVozilaNaPlatformi == vrstaPrvogUdarenogVozila && kolonaSudara == 2)) {
-                    //|| (this.vrstaVozilaNaPlatformi == vrstaDrugogUdarenogVozila && kolonaSudara == 2)) {
                     ((RotacijaInterface) this).setRotacija(true);
                     System.out.println("VRSIM UVIDJAJ ALI NEMGU IZACI JER SE PORED MENE DESIO SUDAR");
                     if (this instanceof SanitetskoVoziloInterface) {
@@ -1562,7 +1388,7 @@ public class Vozilo extends Thread implements Serializable {
                 if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][this.kolonaVozilaNaPlatformi - 1].isDaLiJePoljeSlobodno()) {
                     ((RotacijaInterface) this).setRotacija(true);
                     this.idiLijevo(this.vrstaVozilaNaPlatformi, 2);
-                } else { // izvrsi sudar na licu mjesta
+                } else {
                     ((RotacijaInterface) this).setRotacija(true);
                     evidentirajSudar();
                     ((RotacijaInterface) this).setRotacija(false);
@@ -1585,11 +1411,6 @@ public class Vozilo extends Thread implements Serializable {
                     if (this.vrstaVozilaNaPlatformi == 9) {
                         this.vrstaVozilaNaPlatformi = 8;
                     }
-
-                    // if (kolonaPrvogUdarenogVozila > 2 && kolonaPrvogUdarenogVozila < 5) {
-                    // if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][2].isDaLiJePoljeSlobodno()) {
-                    //    this.idiDole(vrstaSudara, kolonaSudara);
-                    // }
                     while (!this.vecSamIzvrsioUvidjaj && (this.kolonaZaKretanjeDesnoKodSudara < kolonaPrvogUdarenogVozila)) {
                         this.kolonaZaKretanjeDesnoKodSudara++;
                         if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][kolonaZaKretanjeDesnoKodSudara].isDaLiJePoljeSlobodno()
@@ -1604,21 +1425,19 @@ public class Vozilo extends Thread implements Serializable {
                         ((RotacijaInterface) this).setRotacija(false);
                         Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][kolonaZaKretanjeDesnoKodSudara - 1].setVozilo(null);
                         Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
-                    } //else if (kolonaPrvogUdarenogVozila > 0 && kolonaPrvogUdarenogVozila < 3) {
-                    else {
+                    } else {
                         evidentirajSudar();
                         ((RotacijaInterface) this).setRotacija(false);
                         Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi - 1][2].setVozilo(null);
                         Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
                     }
                 }
-
             }
             if (this.kolonaVozilaNaPlatformi == 4) {
                 if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][this.kolonaVozilaNaPlatformi + 1].isDaLiJePoljeSlobodno()) {
                     ((RotacijaInterface) this).setRotacija(true);
                     this.idiDesno(this.vrstaVozilaNaPlatformi, 5);
-                } else { // izvrsi sudar na licu mjesta
+                } else {
                     ((RotacijaInterface) this).setRotacija(true);
                     evidentirajSudar();
                     ((RotacijaInterface) this).setRotacija(false);
@@ -1665,12 +1484,6 @@ public class Vozilo extends Thread implements Serializable {
                 if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][this.kolonaVozilaNaPlatformi - 1].isDaLiJePoljeSlobodno()) {
                     ((RotacijaInterface) this).setRotacija(true);
                     this.idiLijevo(this.vrstaVozilaNaPlatformi, 6);
-                    // } else { // izvrsi sudar na licu mjesta
-                    //   ((RotacijaInterface) this).setRotacija(true);
-                    // evidentirajSudar();
-                    //((RotacijaInterface) this).setRotacija(false);
-                    //}
-
                     if (!this.vecSamIzvrsioUvidjaj && Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][this.kolonaVozilaNaPlatformi - 2].isDaLiJePoljeSlobodno()) {
                         ((RotacijaInterface) this).setRotacija(true);
                         this.idiLijevo(this.vrstaVozilaNaPlatformi, 5);
@@ -1720,7 +1533,7 @@ public class Vozilo extends Thread implements Serializable {
 
                     }
 
-                } else { // malo jos bolje doraditi  da se krece kolonom 6
+                } else {
                     ((RotacijaInterface) this).setRotacija(true);
                     evidentirajSudar();
                     ((RotacijaInterface) this).setRotacija(false);
@@ -1762,7 +1575,7 @@ public class Vozilo extends Thread implements Serializable {
                         Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
                     }
                 }
-            } else { // izvrsi sudar na licu mjesta
+            } else {
                 ((RotacijaInterface) this).setRotacija(true);
                 evidentirajSudar();
                 ((RotacijaInterface) this).setRotacija(false);
@@ -1775,11 +1588,6 @@ public class Vozilo extends Thread implements Serializable {
                 if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][1].isDaLiJePoljeSlobodno()) {
                     ((RotacijaInterface) this).setRotacija(true);
                     idiDesno(this.vrstaVozilaNaPlatformi, 1);
-                    // } else {
-                    //     ((RotacijaInterface) this).setRotacija(true);
-                    //    evidentirajSudar();
-                    //    ((RotacijaInterface) this).setRotacija(false);
-                    //}
                     if (!this.vecSamIzvrsioUvidjaj && Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][2].isDaLiJePoljeSlobodno()) {
                         ((RotacijaInterface) this).setRotacija(true);
                         idiDesno(this.vrstaVozilaNaPlatformi, 2);
@@ -1797,9 +1605,7 @@ public class Vozilo extends Thread implements Serializable {
                                 }
                             }
                             System.out.println("THISSSS VRSTA VOZILA : " + this.vrstaVozilaNaPlatformi);
-                           // if(this.vrstaVozilaNaPlatformi == 0){
 
-                            //}
                             evidentirajSudar();
                             ((RotacijaInterface) this).setRotacija(false);
 
@@ -1829,21 +1635,16 @@ public class Vozilo extends Thread implements Serializable {
                             System.out.println("KOLONA ZA KRETANJE DESNO : " + this.kolonaZaKretanjeDesnoKodSudara);
                             evidentirajSudar();
                             ((RotacijaInterface) this).setRotacija(false);
-                            //if (this.vrstaVozilaNaPlatformi == 1) {
                             if (this.vrstaVozilaNaPlatformi == 1 && this.kolonaZaKretanjeDesnoKodSudara > 2) {
                                 Garaza.garaza[brojPlatforme].getPlatforma()[1][kolonaZaKretanjeDesnoKodSudara - 1].setVozilo(null);
                                 Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
-                            } // if (this.vrstaVozilaNaPlatformi == 1) { 
-                            //    Garaza.garaza[brojPlatforme].getPlatforma()[1][kolonaZaKretanjeDesnoKodSudara - 1].setVozilo(null);
-                            //    Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
-                            //} 
-                            else {
+                            } else {
                                 Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi + 1][2].setVozilo(null);
                                 Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
                             }
                         }
 
-                    } else { // obezbjdi da ide prvom kolonom
+                    } else {
                         ((RotacijaInterface) this).setRotacija(true);
                         evidentirajSudar();
                         ((RotacijaInterface) this).setRotacija(false);
@@ -1895,15 +1696,10 @@ public class Vozilo extends Thread implements Serializable {
                         }
                         evidentirajSudar();
                         ((RotacijaInterface) this).setRotacija(false);
-                        //if (this.vrstaVozilaNaPlatformi == 1) {
                         if (this.vrstaVozilaNaPlatformi == 1 && this.kolonaZaKretanjeDesnoKodSudara > 2) {
                             Garaza.garaza[brojPlatforme].getPlatforma()[1][kolonaZaKretanjeDesnoKodSudara - 1].setVozilo(null);
                             Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
-                        } // if (this.vrstaVozilaNaPlatformi == 1) { 
-                        //    Garaza.garaza[brojPlatforme].getPlatforma()[1][kolonaZaKretanjeDesnoKodSudara - 1].setVozilo(null);
-                        //    Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
-                        //} 
-                        else {
+                        } else {
                             Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi + 1][2].setVozilo(null);
                             Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
                         }
@@ -1919,8 +1715,6 @@ public class Vozilo extends Thread implements Serializable {
                 if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][5].isDaLiJePoljeSlobodno()) {
                     ((RotacijaInterface) this).setRotacija(true);
                     idiDesno(this.vrstaVozilaNaPlatformi, 5);
-
-                    //if (kolonaDrugogUdarenogVozila > 0 && kolonaDrugogUdarenogVozila < 5) {
                     if (kolonaDrugogUdarenogVozila > 4 && kolonaDrugogUdarenogVozila < 7) {
                         while (this.vrstaVozilaNaPlatformi > vrstaPrvogUdarenogVozila) {
                             this.vrstaVozilaNaPlatformi--;
@@ -1988,7 +1782,7 @@ public class Vozilo extends Thread implements Serializable {
                 if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][6].isDaLiJePoljeSlobodno()) {
                     ((RotacijaInterface) this).setRotacija(true);
                     idiLijevo(this.vrstaVozilaNaPlatformi, 6);
-                } else { // napravi kretaje za 6 kolonu
+                } else {
                     ((RotacijaInterface) this).setRotacija(true);
                     evidentirajSudar();
                     ((RotacijaInterface) this).setRotacija(false);
@@ -1998,7 +1792,6 @@ public class Vozilo extends Thread implements Serializable {
                     ((RotacijaInterface) this).setRotacija(true);
                     idiLijevo(this.vrstaVozilaNaPlatformi, 5);
 
-                    //if (kolonaDrugogUdarenogVozila > 0 && kolonaDrugogUdarenogVozila < 5) {
                     if (kolonaDrugogUdarenogVozila > 3 && kolonaDrugogUdarenogVozila < 7) {
                         while (this.vrstaVozilaNaPlatformi > vrstaPrvogUdarenogVozila) {
                             this.vrstaVozilaNaPlatformi--;
@@ -2019,8 +1812,7 @@ public class Vozilo extends Thread implements Serializable {
                         Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi + 1][5].setVozilo(null);
                         Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
                     } else if (kolonaDrugogUdarenogVozila > 0 && kolonaDrugogUdarenogVozila < 4) {
-                        //while (this.vrstaVozilaNaPlatformi > vrstaPrvogUdarenogVozila) {
-                        while(this.vrstaVozilaNaPlatformi > 1){
+                        while (this.vrstaVozilaNaPlatformi > 1) {
                             this.vrstaVozilaNaPlatformi--;
                             if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][5].isDaLiJePoljeSlobodno()) {
                                 idiGore(this.vrstaVozilaNaPlatformi, 5);
@@ -2079,16 +1871,6 @@ public class Vozilo extends Thread implements Serializable {
                 }
                 if ((this.vrstaVozilaNaPlatformi == vrstaSudara && kolonaSudara == 6) || (this.vrstaVozilaNaPlatformi == vrstaPrvogUdarenogVozila && kolonaSudara == 6)
                         || (this.vrstaVozilaNaPlatformi == vrstaDrugogUdarenogVozila && kolonaSudara == 6)) {
-                    System.out.println("VRSIM UVIDJAJ ALI NEMGU IZACI JER SE PORED MENE DESIO SUDAR");
-                    if (this instanceof SanitetskoVoziloInterface) {
-                        System.out.println("SANITETSKO");
-                    }
-                    if (this instanceof PolicijskoVoziloInterface) {
-                        System.out.println("POLICIJSKO");
-                    }
-                    if (this instanceof VatrogasnoVoziloInterface) {
-                        System.out.println("VATROGASNO");
-                    }
                     ((RotacijaInterface) this).setRotacija(true);
                     evidentirajSudar();
                     ((RotacijaInterface) this).setRotacija(false);
@@ -2098,8 +1880,7 @@ public class Vozilo extends Thread implements Serializable {
                     ((RotacijaInterface) this).setRotacija(true);
                     this.idiLijevo(this.vrstaVozilaNaPlatformi, 5);
 
-                    if (this.vrstaVozilaNaPlatformi > vrstaPrvogUdarenogVozila) { // ispod sam drugog udarenog auta 
-                        // System.out.println("A");
+                    if (this.vrstaVozilaNaPlatformi > vrstaPrvogUdarenogVozila) {
                         while (this.vrstaVozilaNaPlatformi > vrstaPrvogUdarenogVozila) {
                             this.vrstaVozilaNaPlatformi--;
                             if (this.vrstaVozilaNaPlatformi > vrstaPrvogUdarenogVozila) {
@@ -2111,13 +1892,12 @@ public class Vozilo extends Thread implements Serializable {
                                 }
                             }
                         }
-                        // System.out.println("uvidjaJJJ");
                         evidentirajSudar();
                         ((RotacijaInterface) this).setRotacija(false);
                         Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
                         Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi + 1][5].setVozilo(null);
 
-                    } else if (this.vrstaVozilaNaPlatformi < vrstaDrugogUdarenogVozila) { //ako je spec. vozilo iza udarenog                        
+                    } else if (this.vrstaVozilaNaPlatformi < vrstaDrugogUdarenogVozila) {
                         while (this.vrstaVozilaNaPlatformi < vrstaDrugogUdarenogVozila) {
                             this.vrstaVozilaNaPlatformi++;
                             if (this.vrstaVozilaNaPlatformi < vrstaDrugogUdarenogVozila) {
@@ -2125,7 +1905,7 @@ public class Vozilo extends Thread implements Serializable {
                                     ((RotacijaInterface) this).setRotacija(true);
                                     this.idiDole(this.vrstaVozilaNaPlatformi, 5);
                                 } else {
-                                    break; // isto neko zaobilazenje ili slicno
+                                    break;
                                 }
                             }
                         }
@@ -2133,7 +1913,6 @@ public class Vozilo extends Thread implements Serializable {
                         ((RotacijaInterface) this).setRotacija(false);
                         Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi - 1][5].setVozilo(null);
                         Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
-
                     }
 
                 } else {
@@ -2145,7 +1924,7 @@ public class Vozilo extends Thread implements Serializable {
                                     ((RotacijaInterface) this).setRotacija(true);
                                     this.idiGore(this.vrstaVozilaNaPlatformi, 6);
                                 } else {
-                                    break; // isto neko zaobilazenje
+                                    break;
                                 }
                             }
 
@@ -2156,7 +1935,7 @@ public class Vozilo extends Thread implements Serializable {
                         Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
                         Garaza.garaza[brojPlatforme].getPlatforma()[vrstaVozilaNaPlatformi + 1][6].setVozilo(null);
 
-                    } else if (this.vrstaVozilaNaPlatformi < vrstaDrugogUdarenogVozila) { // iza sam udarenog vozila ali sada sam u prvoj koloni
+                    } else if (this.vrstaVozilaNaPlatformi < vrstaDrugogUdarenogVozila) {
                         while (this.vrstaVozilaNaPlatformi < vrstaDrugogUdarenogVozila) {
                             this.vrstaVozilaNaPlatformi++;
                             if (this.vrstaVozilaNaPlatformi < vrstaDrugogUdarenogVozila) {
@@ -2164,7 +1943,7 @@ public class Vozilo extends Thread implements Serializable {
                                     ((RotacijaInterface) this).setRotacija(true);
                                     this.idiDole(this.vrstaVozilaNaPlatformi, 6);
                                 } else {
-                                    break; // isto neko zaobilazenje
+                                    break;
                                 }
                             }
 
@@ -2178,7 +1957,7 @@ public class Vozilo extends Thread implements Serializable {
                 }
 
             }
-            if (this.kolonaVozilaNaPlatformi == 4) { // ako je spec. voz. u koloni 3
+            if (this.kolonaVozilaNaPlatformi == 4) {
                 if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][this.kolonaVozilaNaPlatformi + 1].isDaLiJePoljeSlobodno()) {
                     ((RotacijaInterface) this).setRotacija(true);
                     this.idiDesno(this.vrstaVozilaNaPlatformi, 5);
@@ -2186,16 +1965,6 @@ public class Vozilo extends Thread implements Serializable {
 
                 if ((this.vrstaVozilaNaPlatformi == vrstaSudara && kolonaSudara == 6) || (this.vrstaVozilaNaPlatformi == vrstaPrvogUdarenogVozila && kolonaSudara == 6)
                         || (this.vrstaVozilaNaPlatformi == vrstaDrugogUdarenogVozila && kolonaSudara == 6)) {
-                    System.out.println("VRSIM UVIDJAJ ALI NEMGU IZACI JER SE PORED MENE DESIO SUDAR");
-                    if (this instanceof SanitetskoVoziloInterface) {
-                        System.out.println("SANITETSKO");
-                    }
-                    if (this instanceof PolicijskoVoziloInterface) {
-                        System.out.println("POLICIJSKO");
-                    }
-                    if (this instanceof VatrogasnoVoziloInterface) {
-                        System.out.println("VATROGASNO");
-                    }
                     ((RotacijaInterface) this).setRotacija(true);
                     evidentirajSudar();
                     ((RotacijaInterface) this).setRotacija(false);
@@ -2249,14 +2018,8 @@ public class Vozilo extends Thread implements Serializable {
                         while (this.vrstaVozilaNaPlatformi < 9) {
                             this.vrstaVozilaNaPlatformi++;
                             if (this.vrstaVozilaNaPlatformi < 9) {
-                                //  if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][5].isDaLiJePoljeSlobodno()) {
                                 ((RotacijaInterface) this).setRotacija(true);
                                 this.idiDole(this.vrstaVozilaNaPlatformi, 2);
-                                //  } else { // napraviti neko zaoibilazenje
-                                //      evidentirajSudar();
-                                //      ((RotacijaInterface) this).setRotacija(false);
-                                //      break;
-                                // }
                             }
                         }
 
@@ -2274,6 +2037,70 @@ public class Vozilo extends Thread implements Serializable {
                         }
                         if (!this.vecSamIzvrsioUvidjaj && this.vrstaVozilaNaPlatformi > vrstaDrugogUdarenogVozila
                                 && !(vrstaSudara == 8)) {
+                            while (this.vrstaVozilaNaPlatformi > vrstaDrugogUdarenogVozila) {
+                                this.vrstaVozilaNaPlatformi--;
+                                if (this.vrstaVozilaNaPlatformi > vrstaDrugogUdarenogVozila) {
+                                    if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][5].isDaLiJePoljeSlobodno()) {
+                                        this.idiGore(this.vrstaVozilaNaPlatformi, 5);
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        evidentirajSudar();
+                        ((RotacijaInterface) this).setRotacija(false);
+                        if (this.vrstaVozilaNaPlatformi == 8 && (kolonaZaKretanjeDesnoKodSudara == 6 || kolonaZaKretanjeDesnoKodSudara == 5 || kolonaZaKretanjeDesnoKodSudara == 4 || kolonaZaKretanjeDesnoKodSudara == 3)) {
+                            Garaza.garaza[brojPlatforme].getPlatforma()[8][kolonaZaKretanjeDesnoKodSudara - 1].setVozilo(null);
+                            Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
+                        } else {
+                            Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi + 1][5].setVozilo(null);
+                            Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
+                        }
+                    }
+                } else {
+                    ((RotacijaInterface) this).setRotacija(true);
+                    evidentirajSudar();
+                    ((RotacijaInterface) this).setRotacija(false);
+                }
+            }
+            if (this.kolonaVozilaNaPlatformi == 0 && vrstaVozilaNaPlatformi != 9) {
+                if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][this.kolonaVozilaNaPlatformi + 1].isDaLiJePoljeSlobodno()) {
+                    ((RotacijaInterface) this).setRotacija(true);
+                    this.idiDesno(this.vrstaVozilaNaPlatformi, 1);
+                } else {
+                    ((RotacijaInterface) this).setRotacija(true);
+                    evidentirajSudar();
+                    ((RotacijaInterface) this).setRotacija(false);
+                }
+
+                if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][this.kolonaVozilaNaPlatformi + 2].isDaLiJePoljeSlobodno()) {
+                    ((RotacijaInterface) this).setRotacija(true);
+                    this.idiDesno(this.vrstaVozilaNaPlatformi, 2);
+
+                    if (this.vrstaVozilaNaPlatformi < 9) {
+                        while (this.vrstaVozilaNaPlatformi < 9) {
+                            this.vrstaVozilaNaPlatformi++;
+                            if (this.vrstaVozilaNaPlatformi < 9) {
+                                ((RotacijaInterface) this).setRotacija(true);
+                                this.idiDole(this.vrstaVozilaNaPlatformi, 2);
+                            }
+                        }
+
+                        while ((this.kolonaZaKretanjeDesnoKodSudara < 6)) {
+                            this.kolonaZaKretanjeDesnoKodSudara++;
+                            if (Garaza.garaza[brojPlatforme].getPlatforma()[8][kolonaZaKretanjeDesnoKodSudara].isDaLiJePoljeSlobodno() && kolonaZaKretanjeDesnoKodSudara != kolonaSudara) {
+                                this.idiDesno(8, kolonaZaKretanjeDesnoKodSudara);
+                            } else {
+                                break;
+                            }
+                        }
+
+                        if (this.vrstaVozilaNaPlatformi == 9) {
+                            this.vrstaVozilaNaPlatformi = 8;
+                        }
+                        if (this.vrstaVozilaNaPlatformi > vrstaDrugogUdarenogVozila && !(vrstaSudara == 8)) {
                             while (this.vrstaVozilaNaPlatformi > vrstaDrugogUdarenogVozila) {
                                 this.vrstaVozilaNaPlatformi--;
                                 if (this.vrstaVozilaNaPlatformi > vrstaDrugogUdarenogVozila) {
@@ -2297,81 +2124,9 @@ public class Vozilo extends Thread implements Serializable {
                             Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
                         }
                     }
-                } else { // na licu mjesta evidentiraj sudar
-                    ((RotacijaInterface) this).setRotacija(true);
-                    evidentirajSudar();
-                    ((RotacijaInterface) this).setRotacija(false);
-                }
-            }
-            if (this.kolonaVozilaNaPlatformi == 0 && vrstaVozilaNaPlatformi != 9) {
-                if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][this.kolonaVozilaNaPlatformi + 1].isDaLiJePoljeSlobodno()) {
-                    ((RotacijaInterface) this).setRotacija(true);
-                    this.idiDesno(this.vrstaVozilaNaPlatformi, 1);
-
-                    if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][this.kolonaVozilaNaPlatformi + 2].isDaLiJePoljeSlobodno()) {
-                        ((RotacijaInterface) this).setRotacija(true);
-                        this.idiDesno(this.vrstaVozilaNaPlatformi, 2);
-
-                        if (!this.vecSamIzvrsioUvidjaj && this.vrstaVozilaNaPlatformi < 9) {
-                            while (this.vrstaVozilaNaPlatformi < 9) {
-                                this.vrstaVozilaNaPlatformi++;
-                                if (this.vrstaVozilaNaPlatformi < 9) {
-                                    // if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][5].isDaLiJePoljeSlobodno()) {
-                                    ((RotacijaInterface) this).setRotacija(true);
-                                    this.idiDole(this.vrstaVozilaNaPlatformi, 2);
-                                    // } else {  //napraviti neko zaoibilazenje
-                                    ///      evidentirajSudar();
-                                    //      ((RotacijaInterface) this).setRotacija(false);
-                                    //      break;
-                                    //  }
-                                }
-                            }
-
-                            while (!this.vecSamIzvrsioUvidjaj && (this.kolonaZaKretanjeDesnoKodSudara < 6)) {
-                                this.kolonaZaKretanjeDesnoKodSudara++;
-                                if (Garaza.garaza[brojPlatforme].getPlatforma()[8][kolonaZaKretanjeDesnoKodSudara].isDaLiJePoljeSlobodno() && kolonaZaKretanjeDesnoKodSudara != kolonaSudara) {
-                                    this.idiDesno(8, kolonaZaKretanjeDesnoKodSudara);
-                                } else {
-                                    break;
-                                }
-                            }
-
-                            if (this.vrstaVozilaNaPlatformi == 9) {
-                                this.vrstaVozilaNaPlatformi = 8;
-                            }
-                            if (!this.vecSamIzvrsioUvidjaj && this.vrstaVozilaNaPlatformi > vrstaDrugogUdarenogVozila
-                                    && !(vrstaSudara == 8)) {
-                                while (this.vrstaVozilaNaPlatformi > vrstaDrugogUdarenogVozila) {
-                                    this.vrstaVozilaNaPlatformi--;
-                                    if (this.vrstaVozilaNaPlatformi > vrstaDrugogUdarenogVozila) {
-                                        if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][5].isDaLiJePoljeSlobodno()) {
-                                            //((RotacijaInterface) this).setRotacija(true);
-                                            this.idiGore(this.vrstaVozilaNaPlatformi, 5);
-                                        } else {
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-
-                            evidentirajSudar();
-                            ((RotacijaInterface) this).setRotacija(false);
-                            if (this.vrstaVozilaNaPlatformi == 8 && (kolonaZaKretanjeDesnoKodSudara == 6 || kolonaZaKretanjeDesnoKodSudara == 5 || kolonaZaKretanjeDesnoKodSudara == 4 || kolonaZaKretanjeDesnoKodSudara == 3)) {
-                                Garaza.garaza[brojPlatforme].getPlatforma()[8][kolonaZaKretanjeDesnoKodSudara - 1].setVozilo(null);
-                                Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
-                            } else {
-                                Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi + 1][5].setVozilo(null);
-                                Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
-                            }
-                        }
-                    } else { // napraviti da ide kolonom 1 :D
-                        Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][2].setVozilo(null);
-                        Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
-                    }
-                } else { // na licu mjesta evidentiraj sudar
-                    ((RotacijaInterface) this).setRotacija(true);
-                    evidentirajSudar();
-                    ((RotacijaInterface) this).setRotacija(false);
+                } else {
+                    Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][2].setVozilo(null);
+                    Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
                 }
 
             }
@@ -2401,7 +2156,6 @@ public class Vozilo extends Thread implements Serializable {
                                     this.vrstaVozilaNaPlatformi--;
                                     if (this.vrstaVozilaNaPlatformi > vrstaDrugogUdarenogVozila) {
                                         if (Garaza.garaza[brojPlatforme].getPlatforma()[this.vrstaVozilaNaPlatformi][5].isDaLiJePoljeSlobodno()) {
-                                            //((RotacijaInterface) this).setRotacija(true);
                                             this.idiGore(this.vrstaVozilaNaPlatformi, 5);
                                         } else {
                                             break;
@@ -2427,7 +2181,7 @@ public class Vozilo extends Thread implements Serializable {
                             Garaza.garaza[brojPlatforme].getPlatforma()[pocetnaVrstaSpecijalnogVozila][pocetnaKolonaSpecijalnogVozila].setVozilo(this);
                         }
                     } else {
-                        if (Garaza.garaza[brojPlatforme].getPlatforma()[9][2].isDaLiJePoljeSlobodno()) { // jos treba poraditi na ovom da se omoguci i kretanje po 5 koloni
+                        if (Garaza.garaza[brojPlatforme].getPlatforma()[9][2].isDaLiJePoljeSlobodno()) {
                             idiDesno(9, 2);
                             while (this.kolonaZaKretanjeDesnoKodSudara < 6) {
                                 this.kolonaZaKretanjeDesnoKodSudara++;
@@ -2464,7 +2218,7 @@ public class Vozilo extends Thread implements Serializable {
     }
 
     public void evidentirajSudar() {
-        try { // ovo na kraju stavi kao funkciju koju pozivas da nemas dupliranje koda
+        try {
             vrijemeObradeSudara = rand.nextInt(10_000) + 3_000;
             this.vecSamIzvrsioUvidjaj = true;
             if (this instanceof PolicijskoVoziloInterface) {
